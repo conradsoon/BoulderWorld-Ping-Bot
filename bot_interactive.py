@@ -77,12 +77,10 @@ def calendar_button(update: Update, context: CallbackContext):
                 slots = weekend_slots
         slots = [datetime.combine(result, slot) for slot in slots]
         keyboard = [[InlineKeyboardButton(
-            f"{slot.isoformat()}", callback_data=f"{slot_callback_prefix}_{slot.isoformat()}") for slot in slots]]
+            f'{slot.strftime("%I:%M%P")}', callback_data=f"{slot_callback_prefix}_{slot.isoformat()}") for slot in slots]]
         slot_kb = InlineKeyboardMarkup(keyboard)
         query.edit_message_text(
-            f"You selected {result}, a {slot_type.name} slot.\nPick your slot.", reply_markup=slot_kb)
-        # context.bot.send_message(
-        #    chat_id=update.effective_chat.id, text=f"You selected {result}, a {slot_type.name} slot")
+            f"You selected {result.strftime('%a %d %b %Y')}, a {slot_type.name} slot.\nPick your slot.", reply_markup=slot_kb)
     query.answer()
 
 
@@ -103,7 +101,8 @@ def slot_button(update: Update, context: CallbackContext):
                 properties=pika.BasicProperties(
                     delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
                 ))
-            print("Published!")
+            query.edit_message_text(
+                f"✅ Reminder set for {date.strftime('%a %d %b %I:%M %p')}.✅")
         except Exception as e:
             print(e)
 
@@ -112,8 +111,6 @@ def slot_button(update: Update, context: CallbackContext):
         print("test")
         query.answer()
     query.answer()
-    query.edit_message_text(
-        f"Set a reminder for {data}.")
 
 
 start_handler = CommandHandler('start', start)

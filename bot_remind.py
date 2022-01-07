@@ -19,9 +19,9 @@ def callback(ch, method, properties, body):
     print(" [x] Done")
     msg = json.loads(body.decode())
     if msg["action"] == "remind_id":
+        slot = datetime.fromisoformat(msg['timeslot'])
         bot.send_message(chat_id=int(msg["id"]),
-                         text=f"Open slot for {msg['timeslot']}!")
-
+                         text=f"🔔 Open slot for {slot.strftime('%a %d %b %I:%M %p')}🔔")
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
